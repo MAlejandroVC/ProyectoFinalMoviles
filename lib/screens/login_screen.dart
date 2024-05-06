@@ -1,9 +1,13 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:flutter/material.dart';
 import 'registration_screen.dart';
-import 'celestial_gallery_screen.dart';
-
 
 class LoginScreen extends StatelessWidget {
+  final Function(bool) updateLoginStatus;
+
+  LoginScreen({required this.updateLoginStatus});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,12 +60,12 @@ class LoginScreen extends StatelessWidget {
                   child: Text('Olvidé mi contraseña'),
                 ),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     // TODO: Implement function to log in
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => CelestialGalleryScreen()),
-                    );
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    await prefs.setBool('isLoggedIn', true);
+                    updateLoginStatus(true);
                   },
                   child: Text('Iniciar Sesión'),
                 ),
