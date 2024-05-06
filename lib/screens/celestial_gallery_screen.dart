@@ -1,105 +1,47 @@
+import '../models/celestial_body.dart';
 import 'package:flutter/material.dart';
-import 'celestial_details_screen.dart';
+import '../components/celestial_card.dart';
 
-class CelestialGalleryScreen extends StatelessWidget {
+class CelestialGalleryScreen extends StatefulWidget {
+  @override
+  _CelestialGalleryScreenState createState() => _CelestialGalleryScreenState();
+}
+
+class _CelestialGalleryScreenState extends State<CelestialGalleryScreen> {
+  late Future<List<CelestialBody>> futureCelestialBodies;
+  int NUMBER_OF_IMAGES = 10;
+
+  @override
+  void initState() {
+    super.initState();
+    futureCelestialBodies = fetchGalleryCelestialBodies(NUMBER_OF_IMAGES);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Galería Celestial'),
       ),
-      body: ListView(
-        children: <Widget>[
-          CelestialCard(
-            planetName: 'Mercurio',
-            imagePath: 'assets/images/mercury.jpg',
-          ),
-          CelestialCard(
-            planetName: 'Venus',
-            imagePath: 'assets/images/venus.jpg',
-          ),
-          CelestialCard(
-            planetName: 'Tierra',
-            imagePath: 'assets/images/earth.jpg',
-          ),
-        ],
-      ),
-    );
-  }
-}
+      body: FutureBuilder<List<CelestialBody>>(
+        future: futureCelestialBodies,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return CelestialCard(
+                  celestialBody: snapshot.data![index],
+                );
+              },
+            );
+          } else if (snapshot.hasError) {
+            return Text("${snapshot.error}");
+          }
 
-class CelestialCard extends StatelessWidget {
-  final String planetName;
-  final String imagePath;
-
-  const CelestialCard({
-    Key? key,
-    required this.planetName,
-    required this.imagePath,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          AspectRatio(
-            aspectRatio: 16 / 9,
-            child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(imagePath),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  planetName,
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.info_outline),
-                onPressed: () {
-                  // TODO: Implementar función para mostrar información
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CelestialDetailsScreen(
-                        planetName: planetName,
-                        imagePath: imagePath,
-                      ),
-                    ),
-                  );
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.favorite_border),
-                onPressed: () {
-                  // TODO: Implementar función para agregar a favoritos
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.add),
-                onPressed: () {
-                  // TODO: Implementar función para agregar a una carpeta
-                },
-              ),
-            ],
-          ),
-        ],
+          // By default, show a loading spinner.
+          return CircularProgressIndicator();
+        },
       ),
     );
   }

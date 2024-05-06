@@ -1,4 +1,6 @@
+import '../models/celestial_body.dart';
 import 'package:flutter/material.dart';
+import '../components/celestial_card.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -6,61 +8,22 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final TextEditingController _filter = TextEditingController();
-  String _searchText = "";
-  List<String> names = [
-    "Sun",
-    "Moon",
-    "Earth",
-    "Mars",
-    "Jupiter",
-    "Saturn",
-    "Uranus",
-    "Neptune"
-  ]; // Replace this with your list of celestial bodies
-  List<String> filteredNames = [];
-
-  _SearchScreenState() {
-    _filter.addListener(() {
-      if (_filter.text.isEmpty) {
-        setState(() {
-          _searchText = "";
-          filteredNames = names;
-        });
-      } else {
-        setState(() {
-          _searchText = _filter.text;
-        });
-      }
-    });
-  }
+  int NUMBER_OF_IMAGES = 10;
+  String searchQuery = '';
+  late Future<List<CelestialBody>> futureCelestialBodies;
 
   @override
   void initState() {
     super.initState();
-    filteredNames = names;
+    futureCelestialBodies = Future.value([]);
   }
 
-  Widget _buildList() {
-    if (!(_searchText.isEmpty)) {
-      List<String> tempList = [];
-      for (int i = 0; i < filteredNames.length; i++) {
-        if (filteredNames[i]
-            .toLowerCase()
-            .contains(_searchText.toLowerCase())) {
-          tempList.add(filteredNames[i]);
-        }
-      }
-      filteredNames = tempList;
-    }
-    return ListView.builder(
-      itemCount: names == null ? 0 : filteredNames.length,
-      itemBuilder: (BuildContext context, int index) {
-        return new ListTile(
-          title: Text(filteredNames[index]),
-        );
-      },
-    );
+  void _performSearch(String searchTerm) {
+    setState(() {
+      searchQuery = searchTerm;
+      futureCelestialBodies =
+          fetchSearchCelestialBodies(searchQuery, NUMBER_OF_IMAGES);
+    });
   }
 
   @override
@@ -68,13 +31,34 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       appBar: AppBar(
         title: TextField(
-          controller: _filter,
-          decoration: InputDecoration(
-              prefixIcon: Icon(Icons.search), hintText: 'Search...'),
+          decoration: InputDecoration(hintText: 'Search...'),
+          onSubmitted: _performSearch,
         ),
       ),
-      body: Container(
-        child: _buildList(),
+      body: FutureBuilder<List<CelestialBody>>(
+        future: futureCelestialBodies,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+              ),
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return CelestialCard(
+                  celestialBody: snapshot.data![index],
+                  imageAspectRatio: 3 / 2,
+                  fontSize: 12,
+                );
+              },
+            );
+          } else if (snapshot.hasError) {
+            return Text("${snapshot.error}");
+          }
+
+          // By default, show a loading spinner.
+          return CircularProgressIndicator();
+        },
       ),
     );
   }

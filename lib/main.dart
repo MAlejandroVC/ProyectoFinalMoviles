@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
 
 import 'package:flutter/material.dart';
 import 'package:cosmic_explorer/screens/login_screen.dart';
@@ -8,7 +9,8 @@ import 'package:cosmic_explorer/screens/profile_screen.dart';
 import 'package:cosmic_explorer/screens/folders_screen.dart';
 import 'package:cosmic_explorer/screens/search_screen.dart';
 
-void main() async {
+Future main() async {
+  await dotenv.dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;

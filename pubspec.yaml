@@ -31,7 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^2.0.6
-  http: ^0.13.3
+  http: ^1.2.0
   flutter_dotenv: ^5.0.0
 
 
@@ -64,6 +64,7 @@ flutter:
   assets:
     - assets/images/
     - assets/videos/
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
