@@ -8,17 +8,11 @@ class FavoritesService extends ChangeNotifier {
   Future<bool> addFavorite(CelestialBody celestialBody) async {
     try {
       notifyListeners();
-      await FirebaseFirestore.instance.collection('Favorites').add({
-        'author': celestialBody.author,
-        'center': celestialBody.center,
-        'date': celestialBody.date,
-        'description': celestialBody.description,
-        'hdurl': celestialBody.hdurl,
-        'mediaType': celestialBody.mediaType,
-        'title': celestialBody.title,
-        'url': celestialBody.url,
-        'userId': FirebaseAuth.instance.currentUser!.uid,
-      });
+      Map<String, dynamic> celestialBodyMap = celestialBody.toMap();
+      celestialBodyMap['userId'] = FirebaseAuth.instance.currentUser!.uid;
+      await FirebaseFirestore.instance
+          .collection('Favorites')
+          .add(celestialBodyMap);
       notifyListeners();
       return true;
     } catch (e) {

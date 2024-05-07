@@ -48,7 +48,7 @@ class CelestialBody {
     );
   }
 
-  Map toMap() {
+  Map<String, dynamic> toMap() {
     return {
       'author': author,
       'center': center,

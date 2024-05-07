@@ -102,8 +102,7 @@ class FoldersService extends ChangeNotifier {
     }
   }
 
-  Future<bool> addCelestialBodyToFolder(
-      String folderName, CelestialBody celestialBody) async {
+  Future<bool> addCelestialBodyToFolder(String folderName, CelestialBody celestialBody) async {
     // 1. Check if a folder with that name exists
     // 2. If it doesn't, return false
     // 3. Check if the celestial body is already in the folder
