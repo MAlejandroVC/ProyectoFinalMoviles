@@ -40,7 +40,9 @@ class _CelestialGalleryScreenState extends State<CelestialGalleryScreen> {
           }
 
           // By default, show a loading spinner.
-          return CircularProgressIndicator();
+          return Center(
+            child: CircularProgressIndicator(),
+          );
         },
       ),
     );

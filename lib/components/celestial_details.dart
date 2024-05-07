@@ -36,7 +36,6 @@ class CelestialDetailsScreen extends StatelessWidget {
                 'Fecha: ${celestialBody.date}',
                 style: TextStyle(fontSize: 10.0),
               ),
-              // Agregar más detalles aquí, como tamaño, composición, etc.
               Text(
                 celestialBody.description,
                 style: TextStyle(fontSize: 12.0),
