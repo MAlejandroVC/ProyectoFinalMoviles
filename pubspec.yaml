@@ -30,15 +30,21 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences: ^2.0.6
+  # shared_preferences: ^2.0.6
   http: ^1.2.0
   flutter_dotenv: ^5.0.0
   cupertino_icons: ^1.0.2
+  # Providers
+  provider: ^6.1.2
+  # Firebase
   firebase_core: ^2.27.0
   firebase_auth: ^4.17.8
   firebase_ui_auth: ^1.14.0
+  cloud_firestore: ^4.15.8
+  firebase_ui_firestore: ^1.6.3
   # google_sign_in: ^6.2.1
   # firebase_ui_oauth_google: ^1.3.2
+  
 
 dev_dependencies:
   flutter_test:

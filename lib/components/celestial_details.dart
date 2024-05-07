@@ -28,14 +28,18 @@ class CelestialDetailsScreen extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
               SizedBox(height: 20.0),
-              Text(
-                'Créditos: ${celestialBody.author}',
-                style: TextStyle(fontSize: 16.0),
-              ),
-              Text(
-                'Fecha: ${celestialBody.date}',
-                style: TextStyle(fontSize: 10.0),
-              ),
+              celestialBody.author.isNotEmpty
+                  ? Text(
+                      'Créditos: ${celestialBody.author}',
+                      style: TextStyle(fontSize: 16.0),
+                    )
+                  : Container(),
+              celestialBody.date.isNotEmpty
+                  ? Text(
+                      'Fecha: ${celestialBody.date}',
+                      style: TextStyle(fontSize: 10.0),
+                    )
+                  : Container(),
               Text(
                 celestialBody.description,
                 style: TextStyle(fontSize: 12.0),

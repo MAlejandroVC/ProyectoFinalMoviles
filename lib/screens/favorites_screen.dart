@@ -1,25 +1,31 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class FavoritesScreen extends StatefulWidget {
-  @override
-  _FavoritesScreenState createState() => _FavoritesScreenState();
-}
+import '../models/celestial_body.dart';
+import '../components/celestial_card.dart';
 
-class _FavoritesScreenState extends State<FavoritesScreen> {
-  final List<String> favorites = ['Item 1', 'Item 2', 'Item 3']; // Replace this with your list of favorite items
+class FavoritesScreen extends StatelessWidget {
+  FavoritesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Favorites'),
+        title: const Text('Favorites'),
       ),
-      body: ListView.builder(
-        itemCount: favorites.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(favorites[index]),
-          );
+      body: FirestoreListView(
+        padding: EdgeInsets.symmetric(horizontal: 12),
+        pageSize: 32,
+        query: FirebaseFirestore.instance
+            .collection('Favorites')
+            .where('userId', isEqualTo: FirebaseAuth.instance.currentUser!.uid),
+        itemBuilder: (BuildContext context,
+            QueryDocumentSnapshot<Map<String, dynamic>> jsonDocument) {
+          final favoriteId = jsonDocument.id; // Get the document ID
+          return CelestialCard(
+              celestialBody: CelestialBody.fromApodJson(jsonDocument.data()));
         },
       ),
     );
