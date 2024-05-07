@@ -23,7 +23,6 @@ class FavoritesScreen extends StatelessWidget {
             .where('userId', isEqualTo: FirebaseAuth.instance.currentUser!.uid),
         itemBuilder: (BuildContext context,
             QueryDocumentSnapshot<Map<String, dynamic>> jsonDocument) {
-          final favoriteId = jsonDocument.id; // Get the document ID
           return CelestialCard(
               celestialBody: CelestialBody.fromApodJson(jsonDocument.data()));
         },

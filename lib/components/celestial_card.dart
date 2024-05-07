@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:provider/provider.dart';
 
 import 'package:cosmic_explorer/services/favorites_service.dart';
+import 'package:cosmic_explorer/services/folders_service.dart';
 import '../models/celestial_body.dart';
 import 'package:flutter/material.dart';
 import 'celestial_details.dart';
@@ -127,8 +128,53 @@ class CelestialCard extends StatelessWidget {
                   ),
                   IconButton(
                     icon: Icon(Icons.add),
-                    onPressed: () {
-                      // TODO: Implementar función para agregar a una carpeta
+                    onPressed: () async {
+                      // Get the list of folders
+                      List<String> folderNames =
+                          await Provider.of<FoldersService>(context,
+                                  listen: false)
+                              .getFolderNames();
+
+                      // Show dialog with the list of folders
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Select a folder'),
+                            content: Container(
+                              width: double.maxFinite,
+                              child: ListView.builder(
+                                itemCount: folderNames.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return ListTile(
+                                    title: Text(folderNames[index]),
+                                    onTap: () async {
+                                      // Add the celestial body to the selected folder
+                                      bool success =
+                                          await Provider.of<FoldersService>(
+                                                  context,
+                                                  listen: false)
+                                              .addCelestialBodyToFolder(
+                                                  folderNames[index],
+                                                  celestialBody);
+                                      Navigator.of(context).pop();
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(success
+                                              ? 'Added to folder successfully'
+                                              : 'Failed to add to folder'),
+                                          duration: Duration(seconds: 2),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      );
                     },
                   ),
                 ],

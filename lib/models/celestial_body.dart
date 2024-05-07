@@ -47,6 +47,19 @@ class CelestialBody {
       url: json['links'][0]['href'],
     );
   }
+
+  Map toMap() {
+    return {
+      'author': author,
+      'center': center,
+      'date': date,
+      'description': description,
+      'hdurl': hdurl,
+      'mediaType': mediaType,
+      'title': title,
+      'url': url,
+    };
+  }
 }
 
 Future<List<CelestialBody>> fetchGalleryCelestialBodies(

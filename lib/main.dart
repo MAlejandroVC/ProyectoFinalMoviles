@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../services/auth_service.dart';
 import '../services/favorites_service.dart';
+import '../services/folders_service.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,8 +22,11 @@ Future main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<FavoritesService>(
-      create: (context) => FavoritesService(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => FavoritesService()),
+        ChangeNotifierProvider(create: (context) => FoldersService()),
+      ],
       child: MaterialApp(
         title: 'Cosmic Explorer',
         theme: ThemeData(
