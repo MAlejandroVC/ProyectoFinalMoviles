@@ -33,6 +33,7 @@ dependencies:
   # shared_preferences: ^2.0.6
   http: ^1.2.0
   flutter_dotenv: ^5.0.0
+  uuid: ^4.4.0
   cupertino_icons: ^1.0.2
   # Providers
   provider: ^6.1.2
