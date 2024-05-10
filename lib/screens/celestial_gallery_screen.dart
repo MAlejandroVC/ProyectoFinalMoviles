@@ -21,7 +21,7 @@ class _CelestialGalleryScreenState extends State<CelestialGalleryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Galería Celestial'),
+        title: Text('Celestial Gallery'),
       ),
       body: FutureBuilder<List<CelestialBody>>(
         future: futureCelestialBodies,

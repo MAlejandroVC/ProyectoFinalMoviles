@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../models/celestial_body.dart';
 import '../services/forum_service.dart';

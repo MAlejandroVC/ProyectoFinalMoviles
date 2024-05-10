@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cosmic_explorer/models/celestial_body.dart';
 import 'package:flutter/material.dart';
 import '../services/forum_service.dart';
