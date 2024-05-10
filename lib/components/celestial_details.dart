@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 import '../models/celestial_body.dart';
 import '../services/forum_service.dart';
@@ -25,6 +31,26 @@ class _CelestialDetailsScreenState extends State<CelestialDetailsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.celestialBody.title),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.download),
+            onPressed: () async {
+              await _downloadImageToGallery(widget.celestialBody.hdurl);
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.share),
+            onPressed: () async {
+              final file = await _downloadImage(widget.celestialBody.hdurl);
+              final result = await Share.shareXFiles([XFile(file.path)],
+                  text:
+                      'Check out this celestial body: ${widget.celestialBody.title}');
+              if (result.status == ShareResultStatus.success) {
+                print('Thank you for sharing the picture!');
+              }
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.all(20.0),
@@ -80,7 +106,6 @@ class _CelestialDetailsScreenState extends State<CelestialDetailsScreen> {
                   ),
                 ],
               ),
-              // Forum style comments section goes here (ListView of CommentTile widgets)
               SizedBox(height: 20.0),
               Text('Comments',
                   style:
@@ -155,5 +180,37 @@ class _CelestialDetailsScreenState extends State<CelestialDetailsScreen> {
         ),
       ),
     );
+  }
+
+  Future<bool> _requestStoragePermission() async {
+    var status = await Permission.storage.status;
+    if (status == PermissionStatus.denied) {
+      status = await Permission.storage.request();
+    }
+    return status.isGranted;
+  }
+
+  Future<void> _downloadImageToGallery(String url) async {
+    final response = await http.get(Uri.parse(url));
+    final bytes = response.bodyBytes;
+    final name = '${widget.celestialBody.title}.jpg';
+    final result = await ImageGallerySaver.saveImage(bytes, name: name);
+    if (result['isSuccess']) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Image downloaded to ${result['filePath']}')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to download image')),
+      );
+    }
+  }
+
+  Future<File> _downloadImage(String url) async {
+    final response = await http.get(Uri.parse(url));
+    final directory = await getTemporaryDirectory();
+    final file = File('${directory.path}/image.jpg');
+    await file.writeAsBytes(response.bodyBytes);
+    return file;
   }
 }
